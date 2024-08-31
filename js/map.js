@@ -221,10 +221,10 @@ rightMap.on("load", () => {
   let colorScale2 = chroma.scale("OrRd").colors(4);
   // let legendValues = [10, 9, 6, 1];
   plotMap("census", "Median_Household_Income", [
-    [60000, colorScale2[0]],
-    [100000, colorScale2[1]],
-    [150000, colorScale2[2]],
-    [250000, colorScale2[3]],
+    [45000, colorScale2[0]],
+    [85000, colorScale2[1]],
+    [125000, colorScale2[2]],
+    [185000, colorScale2[3]],
   ]);
   // updateLegendValues(legendValues, colorScale);
 

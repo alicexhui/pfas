@@ -262,12 +262,16 @@ input[type="checkbox"] {
   margin: 0 0 5px 0;
 }
 
-.label {
-  width: 25%;
-  display: inline-block;
-  text-align: center;
+.labels {
+  margin-left: 10px;
+  width: 100%;
 }
 
+.labels span {
+  display: inline-block;
+  width: 20%;
+  text-align: center;
+}
 #time_of_day {
   /* border: black 2px solid; */
   height: 25px;
