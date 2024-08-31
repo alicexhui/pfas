@@ -10,8 +10,6 @@ var leftMap = new maplibregl.Map({
   maxZoom: 20,
 });
 
-// the bounds for seattle city is [-122.335167, 47.608013], [-122.224433, 47.734145]
-
 var rightMap = new maplibregl.Map({
   container: "right",
   style: "data/style.json",
@@ -95,9 +93,23 @@ leftMap.on("load", () => {
 
   // When a click event occurs on a feature in the places layer, open a popup at the
   // location of the feature, with description HTML from its properties.
+
   leftMap.on("click", "pfos_pnt_layer", (e) => {
     const coordinates = e.features[0].geometry.coordinates.slice();
-    const description = e.features[0].properties.PC_NAME;
+    const properties = e.features[0].properties;
+
+    const description = `
+        <strong>PWSID:</strong> ${properties.PWSID}<br>
+        <strong>Zipcode:</strong> ${properties.ZIPCODE}<br>
+        <strong>Town:</strong> ${properties.CITY_TOWN}<br>
+        <strong>State:</strong> ${properties.State} <br>
+        <strong>PWS (Public Water System):</strong> ${properties.PWSName}<br>
+        <strong>Facility Name:</strong> ${properties.FacilityName}<br>
+        <strong>Water Type Tested:</strong> ${properties.FacilityWaterType}<br>
+        <strong>Collection Date:</strong> ${properties.CollectionDate}<br>
+        <strong>Contaminant:</strong> PFOS <br>
+        <strong>Analytical Result Value:</strong> ${properties.AnalyticalResultValue} ug/L
+    `;
 
     // Ensure that if the map is zoomed out such that multiple
     // copies of the feature are visible, the popup appears
@@ -124,7 +136,20 @@ leftMap.on("load", () => {
 
   leftMap.on("click", "pfoa_pnt_layer", (e) => {
     const coordinates = e.features[0].geometry.coordinates.slice();
-    const description = e.features[0].properties.PC_NAME;
+    const properties = e.features[0].properties;
+
+    const description = `
+        <strong>PWSID:</strong> ${properties.PWSID}<br>
+        <strong>Zipcode:</strong> ${properties.ZIPCODE}<br>
+        <strong>Town:</strong> ${properties.CITY_TOWN}<br>
+        <strong>State:</strong> ${properties.State} <br>
+        <strong>PWS (Public Water System):</strong> ${properties.PWSName}<br>
+        <strong>Facility Name:</strong> ${properties.FacilityName}<br>
+        <strong>Water Type Tested:</strong> ${properties.FacilityWaterType}<br>
+        <strong>Collection Date:</strong> ${properties.CollectionDate}<br>
+        <strong>Contaminant:</strong> PFOA <br>
+        <strong>Analytical Result Value:</strong> ${properties.AnalyticalResultValue} ug/L
+    `;
 
     // Ensure that if the map is zoomed out such that multiple
     // copies of the feature are visible, the popup appears
@@ -938,106 +963,6 @@ function displayAreaInformation() {
       populateTractInformation(featureData);
     }
   });
-}
-
-function updateFilter() {
-  // get selected time of day
-  // get selected causation
-  let timeOfDay = document.getElementById("time_of_day").value;
-  let causationIndex = 0;
-
-  let causations = document.querySelectorAll(".dropdown-item");
-  let buttonText = document.getElementById("causationButton").innerHTML;
-  causations.forEach(function (causation) {
-    let selectedIndex = parseInt(causation.getAttribute("data-index"));
-    if (buttonText == causation.innerHTML) {
-      causationIndex = selectedIndex;
-    }
-  });
-
-  let timeOfDayFilter = ["==", ["get", "time_of_day"], timeOfDay];
-  if (timeOfDay == "all") {
-    timeOfDayFilter = ["!=", ["get", "time_of_day"], timeOfDay];
-  }
-  console.log(timeOfDayFilter);
-
-  let causationFilter;
-  if (causationIndex == 1) {
-    causationFilter = ["!=", ["at", 0, ["array", ["get", "causation"]]], "1"];
-  } else {
-    causationFilter = [
-      "==",
-      ["at", causationIndex - 2, ["array", ["get", "causation"]]],
-      "1",
-    ];
-  }
-
-  // update map filter
-  filter = ["all", timeOfDayFilter, causationFilter];
-
-  leftMap.setFilter("outage_heatmap", filter);
-  leftMap.setFilter("outage_point", filter);
-}
-
-function displayServicePointInfo() {
-  leftMap.on("click", "outage_point", (e) => {
-    // dropdownValues is the lookup table in misc.js
-    let causationString = e.features[0].properties.causation;
-    let causationIndex = JSON.parse(causationString.replace(/"/g, ""));
-    let causation_desc = "";
-    let causation_count = 0;
-    const causationCount = causationIndex
-      .reduce((result, value, i) => {
-        if (value !== 0) {
-          result.push(`${dropdownValues[i + 1]} (${value})`);
-          causation_desc = dropdownValues[i + 1];
-          causation_count += value;
-        }
-        return result;
-      }, [])
-      .join(", ");
-
-    console.log(causationCount);
-    let bbox = [
-      [e.point.x - 20, e.point.y - 20],
-      [e.point.x + 20, e.point.y + 20],
-    ];
-    const coordinates = e.features[0].geometry.coordinates.slice();
-    while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
-      coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
-    }
-
-    let duration = e.features[0].properties.duration;
-    let timeOfDay = e.features[0].properties.time_of_day;
-    let description = `<p style="font-size:small"><strong>Causation:</strong> ${causationCount}<br>
-          <strong>Frequency:</strong> ${causation_count}  <i>times</i> <br>
-          <strong>Time of Day:</strong> ${timeOfDay} <br>
-          <strong>Duration: </strong>${duration.toLocaleString()} <i>secs</i></p>
-          <hr>
-          <p style="font-size:small; font-style: italic; color:gray"> <strong>Causation</strong>, identified by the SCL operator, shows why each power outage occurred with the indicated frequencies in parantheses. <strong>Frequency</strong> counts the total outages at this location. <strong>Time of day</strong> notes when they happened. <strong>Duration</strong> sums up the total resolution time for all outages here, indicating the cumulative outage duration in the selected period</p>`;
-    new maplibregl.Popup()
-      .setLngLat(coordinates)
-      .setHTML(description)
-      .setMaxWidth("350px")
-      .addTo(leftMap);
-  });
-
-  leftMap.on("mouseenter", "outage_point", () => {
-    leftMap.getCanvas().style.cursor = "pointer";
-  });
-  // Change it back to a pointer when it leaves.
-  leftMap.on("mouseleave", "outage_point", () => {
-    leftMap.getCanvas().style.cursor = "";
-  });
-}
-
-function outageType(radioButtons) {
-  for (let i = 0; i < radioButtons.length; i++) {
-    if (radioButtons[i].checked) {
-      return radioButtons[i].value;
-    }
-  }
-  return null;
 }
 
 function addOutline(map, geometry) {
