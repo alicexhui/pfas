@@ -2,15 +2,6 @@
 <html lang="en">
 
 <head>
-    <!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-GWDQ1936JL"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-
-  gtag('config', 'G-GWDQ1936JL');
-</script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Massachusetts PFAS Influence Map</title>
@@ -28,6 +19,9 @@
     <script src="js/maplibre-gl-compare.js"></script>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+
+    <!-- bootstrap icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <link rel="stylesheet" href="css/index.css">
     <script src="https://code.jquery.com/jquery-3.6.1.min.js"></script>
     <!-- bootstrap -->
@@ -93,15 +87,17 @@ Mapping schools in relation to PFAS contamination is about safeguarding the well
             <h3>Massachusetts PFAS Influence Map</h3>
             <div class="subheadline">PFAS compounds:</div>
             <div>
-                <label for="pfas">PFOS</label>
+                <label for="pfas">PFOS</label> <i class="bi bi-circle-fill" style="font-size: 0.6rem; color: red;"></i>
             </div>
             <div>
-                <label for="pfas">PFOA</label>
+                <label for="pfas">PFOA</label> <i class="bi bi-circle-fill"
+                    style="font-size: 0.6rem; color: orange;"></i>
             </div>
 
             <div class="subheadline">Social Factors:</div>
             <div>
-                <label for="social" class="em_factor">Schools</label>
+                <label for="social" class="em_factor">Schools</label> <i class="bi bi-circle-fill"
+                    style="font-size: 0.6rem; color: blue;"></i>
             </div>
             <div>
                 <label for="social" class="em_factor">Household Median Income</label>
@@ -118,7 +114,12 @@ Mapping schools in relation to PFAS contamination is about safeguarding the well
 
 
             <div style=" display: flex;justify-content: flex-end;">
-                <p class="info"> <span>instruction</span><span>about me</span></p>
+                <p class="info">
+                    <span><a href="https://alicexhui.github.io/instructions/index.html"
+                            target="_blank">instruction</a></span>
+                    <span><a href="https://alicexhui.github.io/aboutme/aboutindex.html" target="_blank">about
+                            me</a></span>
+                </p>
             </div>
         </div>
     </div>
